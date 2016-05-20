@@ -1,49 +1,50 @@
-#
-# This is template for pure python modules (noarch)
-# use template-specs/python-ext.spec for binary python packages
-#
-#
+# TODO:
+#  - use Sample_Code as examples
+
 # Conditional build:
-%bcond_without	doc	# don't build doc
-%bcond_without	tests	# do not perform "make test"
+%bcond_with	doc	# don't build doc
+%bcond_with	tests	# do not perform "make test"
 %bcond_without	python2 # CPython 2.x module
 %bcond_without	python3 # CPython 3.x module
 
-# NOTE: 'module' should match the python import path, not the egg name
-%define 	module	template
-Summary:	-
-Summary(pl.UTF-8):	-
+%define 	module	PyPDF2
+Summary:	A Pure-Python library built as a PDF toolkit
+Summary(pl.UTF-8):	Czysto Pythonowa biblioteka narzędzi dla PDF
 # Name must match the python module/package name (as on pypi or in 'import' statement)
 Name:		python-%{module}
-Version:	_
-Release:	0.1
-License:	- (enter GPL/GPL v2/GPL v3/LGPL/BSD/BSD-like/other license name here)
+Version:	1.26.0
+Release:	1
+License:	BSD
 Group:		Libraries/Python
-Source0:	https://pypi.python.org/packages/source/M/MODULE/%{module}-%{version}.tar.gz
-# Source0-md5:	-
-#URL:		https://pypi.python.org/pypi/MODULE
-URL:		-
+Source0:	https://pypi.python.org/packages/b4/01/68fcc0d43daf4c6bdbc6b33cc3f77bda531c86b174cac56ef0ffdb96faab/PyPDF2-%{version}.tar.gz#md5=2301acc0ecbab0633d4c9b883d50ee5e
+# Source0-md5:	2301acc0ecbab0633d4c9b883d50ee5e
+URL:		http://mstamy2.github.com/PyPDF2
 BuildRequires:	rpm-pythonprov
 # for the py_build, py_install macros
 BuildRequires:	rpmbuild(macros) >= 1.714
 %if %{with python2}
 BuildRequires:	python-modules
-#BuildRequires:	python-setuptools
 %endif
 %if %{with python3}
 BuildRequires:	python3-modules
-#BuildRequires:	python3-setuptools
 %endif
-# when using /usr/bin/env or other in-place substitutions
-#BuildRequires:        sed >= 4.0
-# replace with other requires if defined in setup.py
 Requires:	python-modules
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
+A Pure-Python library built as a PDF toolkit. It is capable of:
+extracting document information (title, author, etc) splitting
+documents page by page merging documents page by page cropping pages
+merging multiple pages into a single page encrypting and decrypting
+PDF files and more!
 
 %description -l pl.UTF-8
+Czysto Pythonowa bibliotek narzędziowa pozwalająca na: uzyskiwanie
+informacji o dokumentach (tytuł, autor itp) dzielenie dokumentów na
+strony sklejanie dokumentów z pojedynczych stron elimancje marginesów
+sklejanie stron w jedną stronę szyfrowanie i odszyfrowywanie plików
+PDF.
 
 %package -n python3-%{module}
 Summary:	-
@@ -52,8 +53,18 @@ Group:		Libraries/Python
 Requires:	python3-modules
 
 %description -n python3-%{module}
+A Pure-Python library built as a PDF toolkit. It is capable of:
+extracting document information (title, author, etc) splitting
+documents page by page merging documents page by page cropping pages
+merging multiple pages into a single page encrypting and decrypting
+PDF files and more!
 
 %description -n python3-%{module} -l pl.UTF-8
+Czysto Pythonowa bibliotek narzędziowa pozwalająca na: uzyskiwanie
+informacji o dokumentach (tytuł, autor itp) dzielenie dokumentów na
+strony sklejanie dokumentów z pojedynczych stron elimancje marginesów
+sklejanie stron w jedną stronę szyfrowanie i odszyfrowywanie plików
+PDF.
 
 %package apidocs
 Summary:	%{module} API documentation
@@ -68,9 +79,6 @@ Dokumentacja API %{module}.
 
 %prep
 %setup -q -n %{module}-%{version}
-
-# fix #!/usr/bin/env python -> #!/usr/bin/python:
-#%{__sed} -i -e '1s,^#!.*python,#!%{__python},' %{name}.py
 
 %build
 %if %{with python2}
@@ -93,9 +101,6 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with python2}
 %py_install
 
-# when files are installed in other way that standard 'setup.py
-# they need to be (re-)compiled
-# change %{py_sitedir} to %{py_sitescriptdir} for 'noarch' packages!
 %py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
 %py_comp $RPM_BUILD_ROOT%{py_sitedir}
 
@@ -106,16 +111,15 @@ rm -rf $RPM_BUILD_ROOT
 %py3_install
 %endif
 
-# in case there are examples provided
 %if %{with python2}
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
-cp -a examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+cp -a Sample_Code/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 %endif
 %if %{with python3}
 install -d $RPM_BUILD_ROOT%{_examplesdir}/python3-%{module}-%{version}
-cp -a examples/* $RPM_BUILD_ROOT%{_examplesdir}/python3-%{module}-%{version}
+cp -a Sample_Code/* $RPM_BUILD_ROOT%{_examplesdir}/python3-%{module}-%{version}
 find $RPM_BUILD_ROOT%{_examplesdir}/python3-%{module}-%{version} -name '*.py' \
-	| xargs sed -i '1s|^#!.*python\b|#!%{__python3}|'
+ 	| xargs sed -i '1s|^#!.*python\b|#!%{__python3}|'
 %endif
 
 %clean
@@ -124,7 +128,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with python2}
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS CREDITS ChangeLog NEWS README THANKS TODO
+%doc CHANGELOG README.md
 %{py_sitescriptdir}/%{module}
 %if "%{py_ver}" > "2.4"
 %{py_sitescriptdir}/%{module}-%{version}-py*.egg-info
@@ -135,7 +139,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with python3}
 %files -n python3-%{module}
 %defattr(644,root,root,755)
-%doc AUTHORS CHANGES LICENSE
+%doc CHANGELOG README.md
 %{py3_sitescriptdir}/%{module}
 %{py3_sitescriptdir}/%{module}-%{version}-py*.egg-info
 %{_examplesdir}/python3-%{module}-%{version}
