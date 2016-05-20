@@ -1,6 +1,4 @@
-# TODO:
-#  - use Sample_Code as examples
-
+#
 # Conditional build:
 %bcond_with	doc	# don't build doc
 %bcond_with	tests	# do not perform "make test"
@@ -10,13 +8,12 @@
 %define 	module	PyPDF2
 Summary:	A Pure-Python library built as a PDF toolkit
 Summary(pl.UTF-8):	Czysto Pythonowa biblioteka narzędzi dla PDF
-# Name must match the python module/package name (as on pypi or in 'import' statement)
 Name:		python-%{module}
 Version:	1.26.0
 Release:	1
 License:	BSD
 Group:		Libraries/Python
-Source0:	https://pypi.python.org/packages/b4/01/68fcc0d43daf4c6bdbc6b33cc3f77bda531c86b174cac56ef0ffdb96faab/PyPDF2-%{version}.tar.gz#md5=2301acc0ecbab0633d4c9b883d50ee5e
+Source0:	https://pypi.python.org/packages/b4/01/68fcc0d43daf4c6bdbc6b33cc3f77bda531c86b174cac56ef0ffdb96faab/%{module}-%{version}.tar.gz
 # Source0-md5:	2301acc0ecbab0633d4c9b883d50ee5e
 URL:		http://mstamy2.github.com/PyPDF2
 BuildRequires:	rpm-pythonprov
@@ -47,8 +44,8 @@ sklejanie stron w jedną stronę szyfrowanie i odszyfrowywanie plików
 PDF.
 
 %package -n python3-%{module}
-Summary:	-
-Summary(pl.UTF-8):	-
+Summary:	A Pure-Python library built as a PDF toolkit
+Summary(pl.UTF-8):	Czysto Pythonowa biblioteka narzędzi dla PDF
 Group:		Libraries/Python
 Requires:	python3-modules
 
@@ -97,13 +94,8 @@ rm -rf _build/html/_sources
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
 %if %{with python2}
 %py_install
-
-%py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
-%py_comp $RPM_BUILD_ROOT%{py_sitedir}
-
 %py_postclean
 %endif
 
@@ -112,14 +104,16 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with python2}
-install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
-cp -a Sample_Code/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+install -d $RPM_BUILD_ROOT%{_examplesdir}/python-%{module}-%{version}
+cp -a Sample_Code/* $RPM_BUILD_ROOT%{_examplesdir}/python-%{module}-%{version}
+find $RPM_BUILD_ROOT%{_examplesdir}/python-%{module}-%{version} -name '*.py' \
+	| xargs sed -i '1s|^#!.*python\b|#!%{__python}|'
 %endif
 %if %{with python3}
 install -d $RPM_BUILD_ROOT%{_examplesdir}/python3-%{module}-%{version}
 cp -a Sample_Code/* $RPM_BUILD_ROOT%{_examplesdir}/python3-%{module}-%{version}
 find $RPM_BUILD_ROOT%{_examplesdir}/python3-%{module}-%{version} -name '*.py' \
- 	| xargs sed -i '1s|^#!.*python\b|#!%{__python3}|'
+	| xargs sed -i '1s|^#!.*python\b|#!%{__python3}|'
 %endif
 
 %clean
@@ -130,9 +124,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc CHANGELOG README.md
 %{py_sitescriptdir}/%{module}
-%if "%{py_ver}" > "2.4"
 %{py_sitescriptdir}/%{module}-%{version}-py*.egg-info
-%endif
 %{_examplesdir}/%{name}-%{version}
 %endif
 
