@@ -97,19 +97,16 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with python2}
 %py_install
 %py_postclean
-%endif
 
-%if %{with python3}
-%py3_install
-%endif
-
-%if %{with python2}
 install -d $RPM_BUILD_ROOT%{_examplesdir}/python-%{module}-%{version}
 cp -a Sample_Code/* $RPM_BUILD_ROOT%{_examplesdir}/python-%{module}-%{version}
 find $RPM_BUILD_ROOT%{_examplesdir}/python-%{module}-%{version} -name '*.py' \
 	| xargs sed -i '1s|^#!.*python\b|#!%{__python}|'
 %endif
+
 %if %{with python3}
+%py3_install
+
 install -d $RPM_BUILD_ROOT%{_examplesdir}/python3-%{module}-%{version}
 cp -a Sample_Code/* $RPM_BUILD_ROOT%{_examplesdir}/python3-%{module}-%{version}
 find $RPM_BUILD_ROOT%{_examplesdir}/python3-%{module}-%{version} -name '*.py' \
