@@ -10,7 +10,7 @@ Summary:	A Pure-Python library built as a PDF toolkit
 Summary(pl.UTF-8):	Czysto Pythonowa biblioteka narzędzi dla PDF
 Name:		python-%{module}
 Version:	1.26.0
-Release:	3
+Release:	4
 License:	BSD
 Group:		Libraries/Python
 Source0:	https://pypi.python.org/packages/b4/01/68fcc0d43daf4c6bdbc6b33cc3f77bda531c86b174cac56ef0ffdb96faab/%{module}-%{version}.tar.gz
